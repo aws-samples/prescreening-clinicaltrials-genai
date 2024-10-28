@@ -1,0 +1,49 @@
+[
+    {
+        "patientId": "1",
+        "patientName":"Tom",
+        "condition":"lung cancer",
+        "chemotherapy":"yes",
+        "radiotherapy":"no",
+        "age":"50",
+        "gender":"male",
+        "country":"usa",
+        "metastasis": "no",
+        "histology":"Squamous cell Carcinoma",
+        "biomarker":"ALK wildtype", 
+        "other":"NA"
+
+    },
+    {
+        "patientId": "2",
+        "patientName":"Jack",
+        "condition":"Adenocarcinoma of lung",
+        "chemotherapy":"yes",
+        "radiotherapy":"no",
+        "age":"40",
+        "gender":"male",
+        "metastasis": "yes",
+        "histology":"Adenocarcinoma",
+        "biomarker":"EGFR wildtype,KRAS Mutant", 
+        "other":"Smoker for 10 years",
+        "chemo drugs":"NA"
+
+    },
+    {
+        "patientId": "3",
+        "patientName":"Tina",
+        "condition":"cancer of cervix",
+        "chemotherapy":"yes",
+        "radiotherapy":"no",
+        "age":"40",
+        "gender":"female",
+        "country":"usa",
+        "metastasis": "no",
+        "histology":"Squamous cell Carcinoma",
+        "biomarker":"HPV16", 
+        "other":"NA",
+        "chemo drugs":"carboplatin/paclitaxel/bevacizumab/Keytruda"
+
+    }
+
+]

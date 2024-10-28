@@ -1,0 +1,6 @@
+boto3==1.34.144
+botocore==1.34.144
+pandas==2.2.3
+Pillow==10.4.0
+Requests==2.32.3
+streamlit==1.37.0

@@ -1,0 +1,160 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Patient trial search Automation API",
+        "version": "1.0.0",
+        "description": "APIs for provides agent functionality for 1/ get patient information 2/ get available clinical trials"
+    },
+    "paths": {
+        "/patientMedDetails/{patientName}/{topMedCondition}": {
+            "get": {
+                "summary": "Get all patients with provided name and medical condition",
+                "description": "Get the list of all the patients with provided name and medical condition.",
+                "operationId": "getPatients",
+                "parameters": [{
+                    "name": "patientName",
+                    "in": "path",
+                    "description": "patient name for whom medical conditions and trial information is fetched",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "medicalCondition",
+                    "in": "path",
+                    "description": "top medical condition for getting only relevant details from patient history",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Get the list of all the patients with provided name and medical condition",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "patientId": {
+                                                "type": "string",
+                                                "description": "Unique ID of the patient."
+                                            },
+                                            "age": {
+                                                "type": "string",
+                                                "description": "age of the patient."
+                                            },
+                                            "gender": {
+                                                "type": "string",
+                                                "description": "gender of the patient"
+                                            },
+                                            "country": {
+                                                "type": "string",
+                                                "description": "current country of the patient"
+                                            },
+                                            "condition": {
+                                                "type": "string",
+                                                "description": "current Condition or top level disease of the patient"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getTrials/{age}/{medicalCondition}/{gender}/{country}": {
+            "get": {
+                "summary": "Get all trials with with provided age, gender, country and medical condition",
+                "description": "Get the list of all the trials with provided age, gender, country and medical condition.",
+                "operationId": "getTrials",
+                "parameters": [{
+                    "name": "age",
+                    "in": "path",
+                    "description": "patient age for which trial information is fetched",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "medicalCondition",
+                    "in": "path",
+                    "description": "top medical condition for which trial information is fetched",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "gender",
+                    "in": "path",
+                    "description": "gender of patient for which trial information is fetched",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "country",
+                    "in": "path",
+                    "description": "country for which trial information is fetched",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Get the list of all the trials with provided age, gender, country and medical condition",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "item1": {  
+                                                "type": "array",
+                                                "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "NCTID":{
+                                                    "type": "string",
+                                                    "description": "Unique ID of the Trial."
+                                                    }
+                                                }
+
+                                                }
+                                            },
+                                            "item2": {  
+                                                "type": "array",
+                                                "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "eligibilitytext":{
+                                                    "type": "string",
+                                                    "description": "eligibility criteria of the Trial."
+                                                    }
+                                                }
+
+                                                }
+                                                
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
