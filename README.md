@@ -55,7 +55,7 @@ For running the streamlit application
 Contact authors listed if your interested in the solution.
 
 ## Authors and acknowledgment
-Special thanks to Anurag Sharma,Priya Padate, Wale Akinfaderin, Ekta Walia Bhullar for their contributions to this project and sharing their expertise in this field.
+Special thanks to Anurag Sharma, Priya Padate, Wale Akinfaderin, Ekta Walia Bhullar for their contributions to this project and sharing their expertise in this field.
 
 ## License
 This library is licensed under the MIT-0 License. See the LICENSE file.
