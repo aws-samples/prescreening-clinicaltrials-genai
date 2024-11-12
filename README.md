@@ -7,7 +7,7 @@ In this post, we present a Generative AI solution leveraging AWS services to fac
 
 ### Solution Overview
 
-This solution uses agent-based framework on Amazon Bedrock that allows developers to model and simulate complex systems by executing multistep tasks across different systems and data sources . The entire workflow spans multiple tasks starting from a) Fetching patient relevant historical b) Querying clinical trials registry to fetch clinical trials to relevant to patient current condition and matching the trials related inclusion & exclusion criteria to patient historical attributes to narrow down to specific clinical trials . This entire process enables automation of the clinical trial pre-screening process which typically takes hours to few minutes .
+This solution uses agent-based framework on [Amazon Bedrock](https://aws.amazon.com/bedrock/) that allows developers to model and simulate complex systems by executing multistep tasks across different systems and data sources . The entire workflow spans multiple tasks starting from a) Fetching patient relevant historical b) Querying clinical trials registry to fetch clinical trials to relevant to patient current condition and matching the trials related inclusion & exclusion criteria to patient historical attributes to narrow down to specific clinical trials . This entire process enables automation of the clinical trial pre-screening process which typically takes hours to few minutes .
 
 ### Techniques
 
@@ -49,26 +49,13 @@ For eg:  trialID - "meets_criteria": Yes/No, "reasons": 2-3 sentence explanation
 
 In this work, we have used a synthetic dataset. A typical sample of patient profile data contains the following patient information: patient id, patient name, age, gender, country, metastasis, condition such as lung cancer, adenocarcinoma of lung, cancer of cervix, chemotherapy status, radiotherapy status, histology, known biomarkers, everyday cognition scale (ECog) score, recurrence of condition and other information such as "smoker for 10 years".
 
-The table below depicts the schema of the synthetic patient profile generated for patients with varying cancer types. 
+The below table depicts the schema of the synthetic patient profile generated for patients with varying cancer types. 
 
-Schema	Description
-Patient id	Unique identifier for each patient
-Patient name	Name of the patient
-Condition	Type of cancer the patient is diagnosed with
-Chemotherapy	Indicates whether the patient underwent chemotherapy treatment or not
-Radiotherapy	Indicates whether the patient underwent radiotherapy treatment or not
-Age	Age of the patient
-Gender	Gender of the patient
-Country	Country of residence of the patient
-Metastasis	Indicates whether the cancer has metastasized (spread) or not
-Histology	Histological subtype or characteristics of the cancer
-Biomarker	Indicates the presence or absence of specific biomarkers related to the cancer
-ECog score	Eastern Cooperative Oncology Group (ECOG) performance status score, indicating the patient's level of functioning
-Condition recurrence	Indicates whether the cancer condition has recurred after initial treatment or not
+![workflow diagram](Images/image_8.png)
 
 #### Clinical trial registry 
 
-ClinicalTrials.gov is a database maintained by the U.S. National Library of Medicine that provides public access to information on clinical studies involving human participants. Its primary purpose is to increase transparency, ensure ethical conduct, and facilitate the recruitment of participants for clinical trials investigating new medical treatments and interventions. 
+[ClinicalTrials.gov](http://clinicaltrials.gov/) is a database maintained by the U.S. National Library of Medicine that provides public access to information on clinical studies involving human participants. Its primary purpose is to increase transparency, ensure ethical conduct, and facilitate the recruitment of participants for clinical trials investigating new medical treatments and interventions. 
 
 This dataset contains clinical trial information such as study descriptions, including the purpose and eligibility criteria, cancer types being studied (e.g., breast cancer, lung cancer, leukemia), intervention details (e.g., drugs, biological products, procedures), study locations and recruitment status, study sponsors and collaborators. It also contains patient enrolment information, for example, number of participants enrolled in each study, target enrolment numbers, age group, and gender distribution of participants. There is also study start and completion dates, including study phase information such as Phase 1, 2 and 3. 
 
@@ -95,17 +82,17 @@ For running the streamlit application
 
 Following are the key steps for implementing this solution: 
 
-1. The first step is to create an Amazon S3 bucket and upload the patient data with all the demographics, medical condition and medical information like histology, biomarkers etc. as shown in the synthetic cancer patient profile. The dataset is formatted in JavaScript Object Notation (JSON). Make sure to take the necessary steps to secure PHI data when storing on Amazon S3 .
+1. The first step is to create an Amazon [S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/GetStartedWithS3.html) and upload the patient data with all the demographics, medical condition and medical information like histology, biomarkers etc. as shown in the synthetic cancer patient profile. The dataset is formatted in JavaScript Object Notation (JSON). Make sure to take the necessary steps to secure PHI data when storing on [Amazon S3](https://docs.aws.amazon.com/whitepapers/latest/architecting-hipaa-security-and-compliance-on-aws/amazon-s3.html) .
 
-2. Create a knowledge base in Amazon Bedrock knowledge-base-patient-data for retrieval of the patient data to augment the agent's knowledge with the patient's medical information. The Amazon Bedrock Knowledge Bases is a fully managed capability that helps implement the entire Retrieval Augmented Generation (RAG) workflow from ingestion to retrieval and prompt augmentation without having to build custom integrations to data sources and manage data flows. As part of this process, a vector index in Amazon OpenSearch Serverless is automatically created. For more information on how to set up a knowledge base, please refer to this link. Titan Text Embeddings v2 is the embeddings model used to embed the patient information on S3 bucket into 1024 dimension vector. If the patient data is updated with new patients or new medical information becomes available for existing patients overtime, a knowledge base can be synced with updated JSON file as explained here.
+2. Create a [knowledge base in Amazon Bedrock](https://aws.amazon.com/bedrock/knowledge-bases/) knowledge-base-patient-data for retrieval of the patient data to augment the agent's knowledge with the patient's medical information. The Amazon Bedrock Knowledge Bases is a fully managed capability that helps implement the entire Retrieval Augmented Generation (RAG) workflow from ingestion to retrieval and prompt augmentation without having to build custom integrations to data sources and manage data flows. As part of this process, a vector index in Amazon OpenSearch Serverless is automatically created. For more information on how to set up a knowledge base, please refer to this [link](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create.html). Titan Text Embeddings v2 is the embeddings model used to embed the patient information on S3 bucket into 1024 dimension vector. If the patient data is updated with new patients or new medical information becomes available for existing patients overtime, a knowledge base can be synced with updated JSON file as explained [here](https://docs.aws.amazon.com/bedrock/latest/userguide/kb-data-source-sync-ingest.html).
 ![workflow diagram](Images/image_4.png)
 
-3. Create an agent in Bedrock. Follow the steps in this documentation to create an agent in the Bedrock console. Provide an agent name, its description and choose the large language model. Here we have chosen Claude 3 Haiku model.
+3. Create an agent in Bedrock. Follow the steps in this [documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-create.html/) to create an agent in the [Bedrock console](https://docs.aws.amazon.com/bedrock/latest/userguide/getting-started-console.html). Provide an agent name, its description and choose the large language model. Here we have chosen Claude 3 Haiku model.
 ![workflow diagram](Images/image_5.png)
 Then we create an action group clinicaltrial_agentgroup and select the knowledge base knowledge-base-patient-data for the agent to use.
 ![workflow diagram](Images/image_6.png)
 
-4. Configure the agent's action group clinicaltrial_agentgroup. We select the action group type as Define with API schemas and use an AWS Lambda function. By default, AWS Lambda is publicly accessible, for data protection make sure to follow the security guidelines as described in the security guide. An API schema is configured to define the API that the agent can invoke to carry out its tasks such as fetching the detailed patient information, and the list of all the trials with provided age, gender, country and medical condition from clinicaltrials.gov. Also, to ensure that PHI remains encrypted while using AWS Lambda, connections to external resources will use an encrypted protocol such as HTTPS or SSL/TLS.
+4. Configure the agent's action group clinicaltrial_agentgroup. We select the action group type as Define with API schemas and use an AWS Lambda function. By default, [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) is publicly accessible, for data protection make sure to follow the security guidelines as described in the [security guide](https://docs.aws.amazon.com/lambda/latest/dg/lambda-security.html). An API schema is configured to define the API that the agent can invoke to carry out its tasks such as fetching the detailed patient information, and the list of all the trials with provided age, gender, country and medical condition from [clinicaltrials.gov](http://clinicaltrials.gov/). Also, to ensure that [PHI remains encrypted](https://docs.aws.amazon.com/whitepapers/latest/architecting-hipaa-security-and-compliance-on-aws/aws-lambda.html) while using AWS Lambda, connections to external resources will use an encrypted protocol such as HTTPS or SSL/TLS.
 ![workflow diagram](Images/image_7.png)
 
 5. The lambda functions provides following functionalities. It fetches patient information based on name and current medical condition as follows:
